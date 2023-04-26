@@ -2,8 +2,10 @@
   "name": "festival-ticket-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
     "migrate": "node-pg-migrate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,6 +21,7 @@
     "eslint": "^8.39.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.27.5",
-    "node-pg-migrate": "^6.2.2"
+    "node-pg-migrate": "^6.2.2",
+    "nodemon": "^2.0.22"
   }
 }
