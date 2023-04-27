@@ -43,6 +43,19 @@ class AuthenticationsHandler {
       },
     };
   }
+
+  async deleteAuthenticationHandler(request) {
+    const { refreshToken } = this._validator.validateDeleteAuthenticationPayload(request.payload);
+
+    await this._authenticationsService.verifyRefreshToken(refreshToken);
+    await this._authenticationsService.deleteRefreshToken(refreshToken);
+
+    return {
+      status: 'success',
+      message: 'authentication berhasil dihapus',
+      data: {},
+    };
+  }
 }
 
 module.exports = AuthenticationsHandler;
