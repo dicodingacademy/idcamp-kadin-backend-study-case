@@ -1,4 +1,5 @@
 const { createPool } = require('./pool');
+const AuthenticationError = require('../../exceptions/AuthenticationError');
 
 class AuthenticationsService {
   constructor() {
@@ -21,6 +22,19 @@ class AuthenticationsService {
     };
 
     await this._pool.query(query);
+  }
+
+  async verifyRefreshToken(refreshToken) {
+    const query = {
+      text: 'SELECT * FROM authentications WHERE refresh_token = $1',
+      values: [refreshToken],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new AuthenticationError('refresh token tidak valid');
+    }
   }
 }
 
