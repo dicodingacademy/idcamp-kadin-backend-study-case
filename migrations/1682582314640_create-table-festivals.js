@@ -1,0 +1,32 @@
+exports.up = (pgm) => {
+  pgm.createTable('festivals', {
+    id: {
+      type: 'VARCHAR(50)',
+      primaryKey: true,
+    },
+    title: {
+      type: 'TEXT',
+      notNull: true,
+    },
+    description: {
+      type: 'TEXT',
+      notNull: true,
+    },
+    facilities: {
+      type: 'TEXT[]',
+      notNull: true,
+    },
+    refundable: {
+      type: 'BOOLEAN',
+      notNull: true,
+    },
+    bannerUrl: {
+      type: 'TEXT',
+      notNull: true,
+    },
+  });
+};
+
+exports.down = (pgm) => {
+  pgm.dropTable('festivals');
+};
