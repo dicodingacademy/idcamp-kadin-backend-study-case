@@ -3,9 +3,13 @@ const config = require('../utils/config');
 const ClientError = require('../exceptions/ClientError');
 const users = require('../api/users');
 const UsersService = require('../services/postgres/UsersService');
+const authentications = require('../api/authentications');
+const AuthenticationsService = require('../services/postgres/AuthenticationsService');
+const JwtTokenManager = require('../tokenize/JwtTokenManager');
 
 async function createServer() {
   const usersService = new UsersService();
+  const authenticationsService = new AuthenticationsService();
 
   const server = Hapi.server({
     host: config.application.host,
@@ -18,6 +22,14 @@ async function createServer() {
       plugin: users,
       options: {
         usersService,
+      },
+    },
+    {
+      plugin: authentications,
+      options: {
+        authenticationsService,
+        usersService,
+        jwtTokenize: JwtTokenManager,
       },
     },
   ]);
