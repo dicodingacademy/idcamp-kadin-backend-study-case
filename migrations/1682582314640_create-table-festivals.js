@@ -20,7 +20,7 @@ exports.up = (pgm) => {
       type: 'BOOLEAN',
       notNull: true,
     },
-    bannerUrl: {
+    banner: {
       type: 'TEXT',
       notNull: true,
     },
