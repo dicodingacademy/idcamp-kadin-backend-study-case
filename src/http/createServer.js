@@ -1,4 +1,5 @@
 const Hapi = require('@hapi/hapi');
+const Jwt = require('@hapi/jwt');
 const config = require('../utils/config');
 const ClientError = require('../exceptions/ClientError');
 const users = require('../api/users');
@@ -8,15 +9,41 @@ const AuthenticationsService = require('../services/postgres/AuthenticationsServ
 const JwtTokenManager = require('../tokenize/JwtTokenManager');
 const festivals = require('../api/festivals');
 const FestivalsService = require('../services/postgres/FestivalsService');
+const LocalStorageService = require('../services/storages/LocalStorageService');
 
 async function createServer() {
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
   const festivalsService = new FestivalsService();
+  const storageService = new LocalStorageService();
 
   const server = Hapi.server({
     host: config.application.host,
     port: config.application.port,
+  });
+
+  // register external plugin
+  await server.register([
+    {
+      plugin: Jwt.plugin,
+    },
+  ]);
+
+  // define auth strategy
+  server.auth.strategy(config.application.authenticationName, 'jwt', {
+    keys: config.jwtTokenize.accessTokenKey,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: config.jwtTokenize.accessTokenAges,
+    },
+    validate: (artifacts) => ({
+      isValid: true,
+      credentials: {
+        id: artifacts.decoded.payload.id,
+      },
+    }),
   });
 
   // register internal plugin
@@ -25,6 +52,7 @@ async function createServer() {
       plugin: users,
       options: {
         usersService,
+        storageService,
       },
     },
     {

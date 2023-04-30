@@ -7,6 +7,7 @@ const config = {
     host: process.env.APPLICATION_HOST,
     port: process.env.APPLICATION_PORT,
     publicUrl: process.env.APPLICATION_PUBLIC_URL,
+    authenticationName: 'festival-ticket__api',
   },
   postgres: {
     host: process.env.PGHOST,
@@ -18,6 +19,7 @@ const config = {
   jwtTokenize: {
     accessTokenKey: process.env.ACCESS_TOKEN_KEY,
     refreshTokenKey: process.env.REFRESH_TOKEN_KEY,
+    accessTokenAges: process.env.ACCESS_TOKEN_AGES,
   },
 };
 

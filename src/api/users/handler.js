@@ -1,8 +1,9 @@
 const InvariantError = require('../../exceptions/InvariantError');
 
 class UsersHandler {
-  constructor(usersService, validator) {
+  constructor(usersService, storageService, validator) {
     this._usersService = usersService;
+    this._storageService = storageService;
     this._validator = validator;
   }
 
@@ -26,6 +27,24 @@ class UsersHandler {
         createdUser,
       },
     }).code(201);
+  }
+
+  async patchUsersMeIdCardHandler(request) {
+    const { id: userId } = request.auth.credentials;
+    const { images } = this._validator.validatePatchUserPayload(request.payload);
+    const { hapi: meta } = images;
+
+    const idCardUrl = await this._storageService.uploadUserIdCard(userId, images, meta);
+
+    await this._usersService.updateIdCardUser(userId, idCardUrl);
+
+    return {
+      status: 'success',
+      message: 'id card berhasil diperbarui',
+      data: {
+        idCardUrl,
+      },
+    };
   }
 }
 
