@@ -11,10 +11,6 @@ class LocalStorageService {
     }
   }
 
-  _generatePublicUploadsUrl(filename) {
-    return `${config.application.publicUrl}/uploads/${filename}`;
-  }
-
   async uploadUserIdCard(userId, file, meta) {
     const filename = `card-${userId}.${meta.filename.split('.').pop()}`;
 
@@ -24,7 +20,7 @@ class LocalStorageService {
     return new Promise((resolve, reject) => {
       fileStream.on('error', (error) => reject(error));
       file.pipe(fileStream);
-      file.on('end', () => resolve(this._generatePublicUploadsUrl(filename)));
+      file.on('end', () => resolve(filename));
     });
   }
 }

@@ -34,16 +34,13 @@ class UsersHandler {
     const { images } = this._validator.validatePatchUserPayload(request.payload);
     const { hapi: meta } = images;
 
-    const idCardUrl = await this._storageService.uploadUserIdCard(userId, images, meta);
-
-    await this._usersService.updateIdCardUser(userId, idCardUrl);
+    const filename = await this._storageService.uploadUserIdCard(userId, images, meta);
+    await this._usersService.updateIdCardUser(userId, filename);
 
     return {
       status: 'success',
       message: 'id card berhasil diperbarui',
-      data: {
-        idCardUrl,
-      },
+      data: {},
     };
   }
 }
