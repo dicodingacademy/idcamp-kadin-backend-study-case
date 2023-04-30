@@ -2,7 +2,6 @@ const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
 const { createPool } = require('./pool');
 const AuthenticationError = require('../../exceptions/AuthenticationError');
-const InvariantError = require('../../exceptions/InvariantError');
 
 class UsersService {
   constructor() {
@@ -66,19 +65,6 @@ class UsersService {
     };
 
     await this._pool.query(query);
-  }
-
-  async isUserValid(userId) {
-    const query = {
-      text: 'SELECT id FROM users WHERE id = $1',
-      values: [userId],
-    };
-
-    const result = await this._pool.query(query);
-
-    if (!result.rowCount) {
-      throw new InvariantError('user tidak valid');
-    }
   }
 }
 
