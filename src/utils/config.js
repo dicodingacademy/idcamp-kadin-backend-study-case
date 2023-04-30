@@ -6,6 +6,7 @@ const config = {
   application: {
     host: process.env.APPLICATION_HOST,
     port: process.env.APPLICATION_PORT,
+    publicUrl: process.env.APPLICATION_PUBLIC_URL,
   },
   postgres: {
     host: process.env.PGHOST,
