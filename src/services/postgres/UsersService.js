@@ -2,6 +2,7 @@ const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
 const { createPool } = require('./pool');
 const AuthenticationError = require('../../exceptions/AuthenticationError');
+const NotFoundError = require('../../exceptions/NotFoundError');
 
 class UsersService {
   constructor() {
@@ -74,8 +75,13 @@ class UsersService {
     };
 
     const result = await this._pool.query(query);
+    const idCard = result.rows[0].id_card_name;
 
-    return result.rows[0];
+    if (!idCard) {
+      throw new NotFoundError('id card tidak ditemukan');
+    }
+
+    return idCard;
   }
 }
 

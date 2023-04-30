@@ -19,6 +19,14 @@ const routes = (handler) => [
       },
     },
   },
+  {
+    method: 'GET',
+    path: '/users/me/id-cards',
+    handler: (request, h) => handler.getUsersMeIdCardHandler(request, h),
+    options: {
+      auth: config.application.authenticationName,
+    },
+  },
 ];
 
 module.exports = routes;

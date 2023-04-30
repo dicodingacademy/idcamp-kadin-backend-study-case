@@ -1,3 +1,4 @@
+const path = require('path');
 const InvariantError = require('../../exceptions/InvariantError');
 
 class UsersHandler {
@@ -42,6 +43,14 @@ class UsersHandler {
       message: 'id card berhasil diperbarui',
       data: {},
     };
+  }
+
+  async getUsersMeIdCardHandler(request, h) {
+    const { id: userId } = request.auth.credentials;
+
+    const idCard = await this._usersService.getUserIdCard(userId);
+
+    return h.file(path.join(process.cwd(), 'src', 'public', 'uploads', idCard));
   }
 }
 
