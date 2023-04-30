@@ -60,11 +60,22 @@ class UsersService {
 
   async updateIdCardUser(userId, idCardUrl) {
     const query = {
-      text: 'UPDATE users SET id_card_url = $1 WHERE id = $2',
+      text: 'UPDATE users SET id_card_name = $1 WHERE id = $2',
       values: [idCardUrl, userId],
     };
 
     await this._pool.query(query);
+  }
+
+  async getUserIdCard(userId) {
+    const query = {
+      text: 'SELECT id_card_name FROM users WHERE id = $1',
+      values: [userId],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows[0];
   }
 }
 
