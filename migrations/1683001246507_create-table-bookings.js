@@ -38,7 +38,6 @@ exports.up = (pgm) => {
 
   pgm.addConstraint('bookings', 'fk_bookings.user_id_users.id', 'FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE');
   pgm.addConstraint('bookings', 'fk_bookings.festival_id_festivals.id', 'FOREIGN KEY(festival_id) REFERENCES festivals(id) ON DELETE CASCADE');
-  pgm.addConstraint('bookings', 'unique_user_id_festival_id', 'UNIQUE(user_id, festival_id)');
 };
 
 exports.down = (pgm) => {
