@@ -10,7 +10,8 @@
       "First Aid Stations"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/oktoberfest.jpg"
+    "banner": "/images/festival/banner/oktoberfest.jpg",
+    "price": 100
   },
   {
     "title": "Film Fest",
@@ -23,7 +24,8 @@
       "Medical Tent"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/film-fest.jpg"
+    "banner": "/images/festival/banner/film-fest.jpg",
+    "price": 120
   },
   {
     "title": "Mardi Gras Madness",
@@ -36,7 +38,8 @@
       "Information Booths"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/mardi-gras.jpg"
+    "banner": "/images/festival/banner/mardi-gras.jpg",
+    "price": 80
   },
   {
     "title": "Comic Con",
@@ -49,7 +52,8 @@
       "Medical Tent"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/comic-con.jpg"
+    "banner": "/images/festival/banner/comic-con.jpg",
+    "price": 150
   },
   {
     "title": "Lunar New Year",
@@ -62,7 +66,8 @@
       "First Aid Station"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/lunar-new-year.jpg"
+    "banner": "/images/festival/banner/lunar-new-year.jpg",
+    "price": 90
   },
   {
     "title": "Running for a Cause",
@@ -75,7 +80,8 @@
       "Information Booths"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/running-for-a-cause.jpg"
+    "banner": "/images/festival/banner/running-for-a-cause.jpg",
+    "price": 50
   },
   {
     "title": "Christmas Market",
@@ -88,7 +94,8 @@
       "First Aid Station"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/christmas-market.jpg"
+    "banner": "/images/festival/banner/christmas-market.jpg",
+    "price": 70
   },
   {
     "title": "Science Fair",
@@ -101,7 +108,8 @@
       "Medical Tent"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/science-fair.jpg"
+    "banner": "/images/festival/banner/science-fair.jpg",
+    "price": 100
   },
   {
     "title": "Jazz Festival",
@@ -114,7 +122,8 @@
       "First Aid Stations"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/jazz-festival.jpg"
+    "banner": "/images/festival/banner/jazz-festival.jpg",
+    "price": 80
   },
   {
     "title": "Halloween Horror Nights",
@@ -127,7 +136,8 @@
       "Information Booths"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/halloween-horror-nights.jpg"
+    "banner": "/images/festival/banner/halloween-horror-nights.jpg",
+    "price": 120
   },
   {
     "title": "Cherry Blossom Festival",
@@ -140,7 +150,8 @@
       "Information Booths"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/cherry-blossom-festival.jpg"
+    "banner": "/images/festival/banner/cherry-blossom-festival.jpg",
+    "price": 90
   },
   {
     "title": "Winter Wonderland",
@@ -153,7 +164,8 @@
       "Information Booths"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/winter-wonderland.jpg"
+    "banner": "/images/festival/banner/winter-wonderland.jpg",
+    "price": 70
   },
   {
     "title": "Sunburn Festival",
@@ -166,7 +178,8 @@
       "First Aid Station"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/sunburn-festival.jpg"
+    "banner": "/images/festival/banner/sunburn-festival.jpg",
+    "price": 100
   },
   {
     "title": "Dia de los Muertos",
@@ -179,7 +192,8 @@
       "Information Booths"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/dia-de-los-muertos.jpg"
+    "banner": "/images/festival/banner/dia-de-los-muertos.jpg",
+    "price": 80
   },
   {
     "title": "Rock in Rio",
@@ -192,7 +206,8 @@
       "Medical Tent"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/rock-in-rio.jpg"
+    "banner": "/images/festival/banner/rock-in-rio.jpg",
+    "price": 120
   },
   {
     "title": "Banff Music Festival",
@@ -205,6 +220,7 @@
       "Information Booths"
     ],
     "refundable": true,
-    "banner": "/images/festival/banner/banff-music-festival.jpg"
+    "banner": "/images/festival/banner/banff-music-festival.jpg",
+    "price": 100
   }
 ]

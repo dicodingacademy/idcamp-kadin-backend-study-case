@@ -24,6 +24,10 @@ exports.up = (pgm) => {
       type: 'TEXT',
       notNull: true,
     },
+    price: {
+      type: 'DECIMAL(10,2)',
+      notNull: true,
+    },
   });
 };
 

@@ -8,7 +8,7 @@ class FestivalsService {
 
   async getFestivals() {
     const result = await this._pool.query('SELECT * FROM festivals');
-    return result.rows;
+    return result.rows.map((festival) => ({ ...festival, price: Number(festival.price) }));
   }
 
   async getFestival(id) {
@@ -23,7 +23,12 @@ class FestivalsService {
       throw new NotFoundError('festival tidak ditemukan');
     }
 
-    return result.rows[0];
+    const [festival] = result.rows;
+
+    return {
+      ...festival,
+      price: Number(festival.price),
+    };
   }
 }
 
