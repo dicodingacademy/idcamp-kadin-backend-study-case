@@ -52,7 +52,7 @@ class BookingsService {
     return rows[0].user_id;
   }
 
-  async getDetailBooking(bookingId) {
+  async getBookingById(bookingId) {
     const query = {
       text: 'SELECT * FROM bookings WHERE id = $1',
       values: [bookingId],
