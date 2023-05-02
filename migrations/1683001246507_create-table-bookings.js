@@ -32,6 +32,10 @@ exports.up = (pgm) => {
       type: 'DATE',
       notNull: true,
     },
+    confirmation_code: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
   });
 
   pgm.addConstraint('bookings', 'fk_bookings.user_id_users.id', 'FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE');
