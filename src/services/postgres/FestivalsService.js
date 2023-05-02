@@ -30,6 +30,17 @@ class FestivalsService {
       price: Number(festival.price),
     };
   }
+
+  async isFestivalAvailable(id) {
+    const query = {
+      text: 'SELECT id FROM festivals WHERE id = $1',
+      values: [id],
+    };
+
+    const { rows } = await this._pool.query(query);
+
+    return rows.length > 0;
+  }
 }
 
 module.exports = FestivalsService;

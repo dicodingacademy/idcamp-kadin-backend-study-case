@@ -38,16 +38,24 @@ class BookingsService {
 
     const { rows } = await this._pool.query(query);
 
+    if (!rows.length) {
+      return null;
+    }
+
     return rows[0].user_id;
   }
 
-  async getUserIdByBookingId({ bookingId }) {
+  async getUserIdByBookingId(bookingId) {
     const query = {
       text: 'SELECT user_id FROM bookings WHERE id = $1',
       values: [bookingId],
     };
 
     const { rows } = await this._pool.query(query);
+
+    if (!rows.length) {
+      return null;
+    }
 
     return rows[0].user_id;
   }
@@ -74,17 +82,6 @@ class BookingsService {
     };
 
     await this._pool.query(query);
-  }
-
-  async isBookingDeleted(bookingId) {
-    const query = {
-      text: 'SELECT status FROM bookings WHERE id = $1',
-      values: [bookingId],
-    };
-
-    const { rows } = await this._pool.query(query);
-
-    return rows[0].status === -1;
   }
 }
 

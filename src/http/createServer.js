@@ -11,16 +11,24 @@ const JwtTokenManager = require('../tokenize/JwtTokenManager');
 const festivals = require('../api/festivals');
 const FestivalsService = require('../services/postgres/FestivalsService');
 const LocalStorageService = require('../services/storages/LocalStorageService');
+const BookingsService = require('../services/postgres/BookingsService');
+const QueueService = require('../services/rabbitmq/QueueService');
+const bookings = require('../api/bookings');
 
 async function createServer() {
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
   const festivalsService = new FestivalsService();
   const storageService = new LocalStorageService();
+  const bookingsService = new BookingsService();
+  const queueService = new QueueService();
 
   const server = Hapi.server({
     host: config.application.host,
     port: config.application.port,
+    debug: {
+      request: ['error'],
+    },
   });
 
   // register external plugin
@@ -73,22 +81,26 @@ async function createServer() {
         festivalsService,
       },
     },
+    {
+      plugin: bookings,
+      options: {
+        bookingsService,
+        festivalsService,
+        queueService,
+      },
+    },
   ]);
 
   // interpret response with pre response middleware
   server.ext('onPreResponse', (request, h) => {
     const { response } = request;
 
-    if (response instanceof Error) {
-      if (response instanceof ClientError) {
-        return h.response({
-          status: 'fail',
-          message: response.message,
-          data: {},
-        }).code(response.statusCode);
-      }
-
-      return h.continue;
+    if (response instanceof ClientError) {
+      return h.response({
+        status: 'fail',
+        message: response.message,
+        data: {},
+      }).code(response.statusCode);
     }
 
     return h.continue;
