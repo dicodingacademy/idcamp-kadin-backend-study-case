@@ -1,0 +1,91 @@
+const { nanoid } = require('nanoid');
+const { createPool } = require('./pool');
+
+class BookingsService {
+  constructor() {
+    this._pool = createPool();
+  }
+
+  async persistBooking({
+    userId, festivalId, bookingDate, quantity,
+  }) {
+    const bookingsId = `booking-${nanoid(16)}`;
+
+    const query = {
+      text: 'INSERT INTO bookings VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+      values: [bookingsId, userId, festivalId, bookingDate, quantity, null, 0, new Date(), null],
+    };
+
+    await this._pool.query(query);
+
+    return bookingsId;
+  }
+
+  async confirmBookings({ confirmationCode }) {
+    const query = {
+      text: 'UPDATE bookings SET status = 1 WHERE confirmation_code = $1',
+      values: [confirmationCode],
+    };
+
+    await this._pool.query(query);
+  }
+
+  async getUserIdByConfirmationCode({ confirmationCode }) {
+    const query = {
+      text: 'SELECT user_id FROM bookings WHERE confirmation_code = $1',
+      values: [confirmationCode],
+    };
+
+    const { rows } = await this._pool.query(query);
+
+    return rows[0].user_id;
+  }
+
+  async getUserIdByBookingId({ bookingId }) {
+    const query = {
+      text: 'SELECT user_id FROM bookings WHERE id = $1',
+      values: [bookingId],
+    };
+
+    const { rows } = await this._pool.query(query);
+
+    return rows[0].user_id;
+  }
+
+  async getDetailBooking(bookingId) {
+    const query = {
+      text: 'SELECT * FROM bookings WHERE id = $1',
+      values: [bookingId],
+    };
+
+    const { rows } = await this._pool.query(query);
+
+    const [booking] = rows;
+
+    delete booking.confirmation_code;
+
+    return booking;
+  }
+
+  async softDeleteBooking(bookingId) {
+    const query = {
+      text: 'UPDATE bookings SET status = -1 WHERE id = $1',
+      values: [bookingId],
+    };
+
+    await this._pool.query(query);
+  }
+
+  async isBookingDeleted(bookingId) {
+    const query = {
+      text: 'SELECT status FROM bookings WHERE id = $1',
+      values: [bookingId],
+    };
+
+    const { rows } = await this._pool.query(query);
+
+    return rows[0].status === -1;
+  }
+}
+
+module.exports = BookingsService;
