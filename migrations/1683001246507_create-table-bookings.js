@@ -22,7 +22,6 @@ exports.up = (pgm) => {
     },
     total_price: {
       type: 'DECIMAL(10,2)',
-      notNull: true,
     },
     status: {
       type: 'SMALLINT',
@@ -34,7 +33,6 @@ exports.up = (pgm) => {
     },
     confirmation_code: {
       type: 'VARCHAR(50)',
-      notNull: true,
     },
   });
 
