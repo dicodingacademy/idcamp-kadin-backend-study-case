@@ -63,7 +63,7 @@ class BookingsHandler {
     };
   }
 
-  async getBookingByIdHandler(request) {
+  async getBookingByIdHandler(request, h) {
     const { id: userId } = request.auth.credentials;
     const { id: bookingId } = request.params;
 
@@ -73,14 +73,17 @@ class BookingsHandler {
       throw new ForbiddenError('anda tidak berhak mengakses resource ini');
     }
 
-    const booking = await this._bookingsService.getBookingById(bookingId);
+    const { value, from } = await this._bookingsService.getBookingById(bookingId);
 
-    return {
+    const response = h.response({
       status: 'success',
       data: {
-        booking,
+        booking: value,
       },
-    };
+    });
+
+    response.header('X-Data-Source', from);
+    return response;
   }
 
   async deleteBookingByIdHandler(request) {

@@ -2,8 +2,9 @@ const { nanoid } = require('nanoid');
 const { createPool } = require('./pool');
 
 class BookingsService {
-  constructor() {
+  constructor(cacheService) {
     this._pool = createPool();
+    this._cacheService = cacheService;
   }
 
   async persistBooking({
@@ -21,13 +22,32 @@ class BookingsService {
     return bookingsId;
   }
 
-  async confirmBookings({ confirmationCode }) {
+  async confirmBookings(confirmationCode) {
     const query = {
       text: 'UPDATE bookings SET status = 1 WHERE confirmation_code = $1',
       values: [confirmationCode],
     };
 
     await this._pool.query(query);
+
+    // delete the cache
+    const bookingId = await this.getBookingIdByConfirmationCode(confirmationCode);
+    await this._cacheService.del(`booking:${bookingId}`);
+  }
+
+  async getBookingIdByConfirmationCode(confirmationCode) {
+    const query = {
+      text: 'SELECT id FROM bookings WHERE confirmation_code = $1',
+      values: [confirmationCode],
+    };
+
+    const { rows } = await this._pool.query(query);
+
+    if (!rows.length) {
+      return null;
+    }
+
+    return rows[0].id;
   }
 
   async getUserIdByConfirmationCode({ confirmationCode }) {
@@ -61,6 +81,17 @@ class BookingsService {
   }
 
   async getBookingById(bookingId) {
+    const cacheKey = `booking:${bookingId}`;
+
+    const cache = await this._cacheService.get(cacheKey);
+
+    if (cache) {
+      return {
+        value: JSON.parse(cache),
+        from: 'cache',
+      };
+    }
+
     const query = {
       text: 'SELECT * FROM bookings WHERE id = $1',
       values: [bookingId],
@@ -72,7 +103,12 @@ class BookingsService {
 
     delete booking.confirmation_code;
 
-    return booking;
+    await this._cacheService.set(cacheKey, JSON.stringify(booking));
+
+    return {
+      value: booking,
+      from: 'database',
+    };
   }
 
   async softDeleteBooking(bookingId) {
@@ -82,6 +118,9 @@ class BookingsService {
     };
 
     await this._pool.query(query);
+
+    // delete the cache
+    await this._cacheService.delete(`booking:${bookingId}`);
   }
 }
 

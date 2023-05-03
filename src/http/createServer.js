@@ -14,18 +14,23 @@ const LocalStorageService = require('../services/storages/LocalStorageService');
 const BookingsService = require('../services/postgres/BookingsService');
 const QueueService = require('../services/rabbitmq/QueueService');
 const bookings = require('../api/bookings');
+const CacheService = require('../services/redis/CacheService');
 
 async function createServer() {
+  const cacheService = new CacheService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
   const festivalsService = new FestivalsService();
   const storageService = new LocalStorageService();
-  const bookingsService = new BookingsService();
+  const bookingsService = new BookingsService(cacheService);
   const queueService = new QueueService();
 
   const server = Hapi.server({
     host: config.application.host,
     port: config.application.port,
+    debug: {
+      request: ['error'],
+    },
   });
 
   // register external plugin
