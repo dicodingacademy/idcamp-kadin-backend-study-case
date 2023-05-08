@@ -99,7 +99,7 @@ class BookingsHandler {
 
     await this._bookingsService.softDeleteBooking(bookingId);
 
-    await this._queueService.sendMessage('booking:delete', bookingId);
+    await this._queueService.sendMessage('booking:delete', JSON.stringify({ bookingId }));
 
     return {
       status: 'success',
