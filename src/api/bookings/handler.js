@@ -77,6 +77,7 @@ class BookingsHandler {
 
     const response = h.response({
       status: 'success',
+      message: 'booking berhasil ditemukan',
       data: {
         booking: value,
       },
