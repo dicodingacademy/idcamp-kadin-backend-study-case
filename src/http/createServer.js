@@ -17,6 +17,7 @@ const bookings = require('../api/bookings');
 const CacheService = require('../services/redis/CacheService');
 
 async function createServer() {
+  // create services that will be used by the plugin
   const cacheService = new CacheService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
@@ -25,6 +26,7 @@ async function createServer() {
   const bookingsService = new BookingsService(cacheService);
   const queueService = new QueueService();
 
+  // create HTTP server using hapi
   const server = Hapi.server({
     host: config.application.host,
     port: config.application.port,
@@ -40,15 +42,20 @@ async function createServer() {
     },
   ]);
 
-  // define auth strategy
+  // define strategy for jwt token
   server.auth.strategy(config.application.authenticationName, 'jwt', {
     keys: config.jwtTokenize.accessTokenKey,
+    // verify the token
+    // the false value for aud, iss, and sub is to disable the verification on those properties
     verify: {
       aud: false,
       iss: false,
       sub: false,
       maxAgeSec: config.jwtTokenize.accessTokenAges,
     },
+    // function that allows additional validation based on the decoded token
+    // we used this function to get the user id from the decoded token,
+    // but you can also use this function to validate other things
     validate: (artifacts) => ({
       isValid: true,
       credentials: {
@@ -90,10 +97,15 @@ async function createServer() {
     },
   ]);
 
-  // interpret response with pre response middleware
+  // intercept the response before it is sent to the client
+  // this is used to handle error response
+  // if the response is an instance of ClientError, then we will send the error response
+  // why we define this interceptor here?
+  // because we don't want to catch the error one by one in each route handler
   server.ext('onPreResponse', (request, h) => {
     const { response } = request;
 
+    // if the response is an instance of ClientError, then we will send the error response
     if (response instanceof ClientError) {
       return h.response({
         status: 'fail',
@@ -102,6 +114,7 @@ async function createServer() {
       }).code(response.statusCode);
     }
 
+    // otherwise, return the response without any change
     return h.continue;
   });
 

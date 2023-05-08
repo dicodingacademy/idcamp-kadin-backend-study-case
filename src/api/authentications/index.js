@@ -2,6 +2,7 @@ const AuthenticationsValidator = require('./validator');
 const AuthenticationsHandler = require('./handler');
 const routes = require('./routes');
 
+// this plugin will be used to create authentication feature
 const authentications = {
   name: 'authentications',
   version: '1.0.0',

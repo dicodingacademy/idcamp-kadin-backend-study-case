@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const InvariantError = require('../../exceptions/InvariantError');
 
+// Joi schema for POST /users
 const PostUserPayloadSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().email().required(),

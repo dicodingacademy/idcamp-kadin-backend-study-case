@@ -4,8 +4,11 @@ const routes = (handler) => [
   {
     method: 'POST',
     path: '/bookings',
+    // the reason we used anonymous function here is because ...
+    // we want to keep the context of this on the class handler
     handler: (request, h) => handler.postBookingHandler(request, h),
     options: {
+      // set the authentication strategy to 'festival-ticket__api'
       auth: config.application.authenticationName,
     },
   },

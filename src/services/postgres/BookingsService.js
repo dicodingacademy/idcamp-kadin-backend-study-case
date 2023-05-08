@@ -1,12 +1,17 @@
 const { nanoid } = require('nanoid');
 const { createPool } = require('./pool');
 
+// this class will be used to handle all the database operations related to bookings table
 class BookingsService {
   constructor(cacheService) {
     this._pool = createPool();
+    // inject cache service
     this._cacheService = cacheService;
   }
 
+  /**
+   * this method will be used to add booking to database
+   */
   async persistBooking({
     userId, festivalId, bookingDate, quantity,
   }) {
@@ -22,6 +27,9 @@ class BookingsService {
     return bookingsId;
   }
 
+  /**
+   * this method will be used to confirm bookings
+   */
   async confirmBookings(confirmationCode) {
     const query = {
       text: 'UPDATE bookings SET status = 1 WHERE confirmation_code = $1',
@@ -32,9 +40,14 @@ class BookingsService {
 
     // delete the cache
     const bookingId = await this.getBookingIdByConfirmationCode(confirmationCode);
+
+    // we need to delete the cache because the booking status has changed
     await this._cacheService.del(`booking:${bookingId}`);
   }
 
+  /**
+   * this method will be used to get booking id by confirmation code
+   */
   async getBookingIdByConfirmationCode(confirmationCode) {
     const query = {
       text: 'SELECT id FROM bookings WHERE confirmation_code = $1',
@@ -50,6 +63,9 @@ class BookingsService {
     return rows[0].id;
   }
 
+  /**
+   * this method will be used to get user id by confirmation code
+   */
   async getUserIdByConfirmationCode({ confirmationCode }) {
     const query = {
       text: 'SELECT user_id FROM bookings WHERE confirmation_code = $1',
@@ -65,6 +81,9 @@ class BookingsService {
     return rows[0].user_id;
   }
 
+  /**
+   * this method will be used to get user id by booking id
+   */
   async getUserIdByBookingId(bookingId) {
     const query = {
       text: 'SELECT user_id FROM bookings WHERE id = $1',
@@ -80,18 +99,25 @@ class BookingsService {
     return rows[0].user_id;
   }
 
+  /**
+   * this method will be used to get booking by id
+   */
   async getBookingById(bookingId) {
+    // check the cache first
     const cacheKey = `booking:${bookingId}`;
 
+    // get the cache
     const cache = await this._cacheService.get(cacheKey);
 
+    // if cache is exist, then return the cache
     if (cache) {
       return {
         value: JSON.parse(cache),
-        from: 'cache',
+        from: 'cache', // this will be used to check where the data is coming from
       };
     }
 
+    // if cache is not exist, then get the data from database
     const query = {
       text: 'SELECT * FROM bookings WHERE id = $1',
       values: [bookingId],
@@ -101,16 +127,21 @@ class BookingsService {
 
     const [booking] = rows;
 
+    // delete the confirmation code from the booking object
     delete booking.confirmation_code;
 
+    // store the booking object in cache
     await this._cacheService.set(cacheKey, JSON.stringify(booking));
 
     return {
       value: booking,
-      from: 'database',
+      from: 'database', // this will be used to check where the data is coming from
     };
   }
 
+  /**
+   * this method will be used to softly delete booking
+   */
   async softDeleteBooking(bookingId) {
     const query = {
       text: 'UPDATE bookings SET status = -1 WHERE id = $1',
@@ -119,7 +150,7 @@ class BookingsService {
 
     await this._pool.query(query);
 
-    // delete the cache
+    // we need to delete the cache because the booking status has changed
     await this._cacheService.delete(`booking:${bookingId}`);
   }
 }

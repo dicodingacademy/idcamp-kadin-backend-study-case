@@ -2,6 +2,11 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+/**
+ * this object contains all the configuration needed by the application
+ * the values are taken from the .env file that gives the flexibility to
+ * change the configuration without having to change the code
+ */
 const config = {
   application: {
     host: process.env.APPLICATION_HOST,

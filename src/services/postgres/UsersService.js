@@ -4,11 +4,16 @@ const { createPool } = require('./pool');
 const AuthenticationError = require('../../exceptions/AuthenticationError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 
+// this class will be used to handle all the database operations related to users table
 class UsersService {
   constructor() {
+    // create database connection pool
     this._pool = createPool();
   }
 
+  /**
+   * this method will be used to add user to database
+   */
   async persistUsers(user) {
     const id = `user-${nanoid(16)}`;
     const { name, email, password } = user;
@@ -28,6 +33,9 @@ class UsersService {
     };
   }
 
+  /**
+   * this method will be used to get user by id from database
+   */
   async isEmailAvailable(email) {
     const query = {
       text: 'SELECT id FROM users WHERE email = $1',
@@ -38,6 +46,9 @@ class UsersService {
     return !result.rowCount > 0;
   }
 
+  /**
+   * this method will be used to verify user credential from database
+   */
   async verifyUserCredential(email, password) {
     const query = {
       text: 'SELECT id, password FROM users WHERE email = $1',
@@ -45,13 +56,18 @@ class UsersService {
     };
     const result = await this._pool.query(query);
 
+    // if user with email not found, throw error
     if (!result.rowCount) {
       throw new AuthenticationError('kredensial yang Anda berikan salah');
     }
 
     const { id, password: hashedPassword } = result.rows[0];
+    // compare password with hashed password
     const match = await bcrypt.compare(password, hashedPassword);
 
+    // if password not match, throw error
+    // why we used same error message for both email and password?
+    // to prevent attacker to know which one is wrong, email or password
     if (!match) {
       throw new AuthenticationError('kredensial yang Anda berikan salah');
     }
@@ -59,6 +75,9 @@ class UsersService {
     return id;
   }
 
+  /**
+   * this method will be used to update refresh token to database
+   */
   async updateIdCardUser(userId, idCardUrl) {
     const query = {
       text: 'UPDATE users SET id_card_name = $1 WHERE id = $2',
@@ -68,6 +87,7 @@ class UsersService {
     await this._pool.query(query);
   }
 
+  // this method will be used to get user by id from database
   async getUserIdCard(userId) {
     const query = {
       text: 'SELECT id_card_name FROM users WHERE id = $1',
@@ -77,6 +97,7 @@ class UsersService {
     const result = await this._pool.query(query);
     const idCard = result.rows[0].id_card_name;
 
+    // if user with id not found, throw error
     if (!idCard) {
       throw new NotFoundError('id card tidak ditemukan');
     }

@@ -2,6 +2,7 @@ const BookingsHandler = require('./handler');
 const BookingsValidator = require('./validator');
 const routes = require('./routes');
 
+// this plugin will be used to create bookings feature
 const bookings = {
   name: 'bookings',
   version: '1.0.0',
