@@ -1,6 +1,5 @@
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
-const Inert = require('@hapi/inert');
 const config = require('../utils/config');
 const ClientError = require('../exceptions/ClientError');
 const users = require('../api/users');
