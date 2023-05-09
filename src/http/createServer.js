@@ -30,9 +30,6 @@ async function createServer() {
     {
       plugin: Jwt.plugin,
     },
-    {
-      plugin: Inert,
-    },
   ]);
 
   // define strategy for jwt token
