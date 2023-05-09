@@ -11,20 +11,13 @@ const JwtTokenManager = require('../tokenize/JwtTokenManager');
 const festivals = require('../api/festivals');
 const FestivalsService = require('../services/postgres/FestivalsService');
 const LocalStorageService = require('../services/storages/LocalStorageService');
-const BookingsService = require('../services/postgres/BookingsService');
-const QueueService = require('../services/rabbitmq/QueueService');
-const bookings = require('../api/bookings');
-const CacheService = require('../services/redis/CacheService');
 
 async function createServer() {
   // create services that will be used by the plugin
-  const cacheService = new CacheService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
   const festivalsService = new FestivalsService();
   const storageService = new LocalStorageService();
-  const bookingsService = new BookingsService(cacheService);
-  const queueService = new QueueService();
 
   // create HTTP server using hapi
   const server = Hapi.server({
@@ -85,14 +78,6 @@ async function createServer() {
       plugin: festivals,
       options: {
         festivalsService,
-      },
-    },
-    {
-      plugin: bookings,
-      options: {
-        bookingsService,
-        festivalsService,
-        queueService,
       },
     },
   ]);
