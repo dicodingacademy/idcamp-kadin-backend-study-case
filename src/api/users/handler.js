@@ -2,9 +2,8 @@ const InvariantError = require('../../exceptions/InvariantError');
 
 // this handler will be used to handle the request from client related to users feature
 class UsersHandler {
-  constructor(usersService, storageService, validator) {
+  constructor(usersService, validator) {
     this._usersService = usersService;
-    this._storageService = storageService;
     this._validator = validator;
   }
 

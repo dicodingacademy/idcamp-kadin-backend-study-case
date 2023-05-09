@@ -6,8 +6,8 @@ const routes = require('./routes');
 const users = {
   name: 'users',
   version: '1.0.0',
-  register: async (server, { usersService, storageService }) => {
-    const usersHandler = new UsersHandler(usersService, storageService, UsersValidator);
+  register: async (server, { usersService }) => {
+    const usersHandler = new UsersHandler(usersService, UsersValidator);
     server.route(routes(usersHandler));
   },
 };
