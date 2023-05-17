@@ -2,7 +2,6 @@ const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
 const { createPool } = require('./pool');
 const AuthenticationError = require('../../exceptions/AuthenticationError');
-const NotFoundError = require('../../exceptions/NotFoundError');
 
 // this class will be used to handle all the database operations related to users table
 class UsersService {
