@@ -39,7 +39,7 @@ class BookingsService {
   /**
    * this method will be used to get user id by confirmation code
    */
-  async getUserIdByConfirmationCode({ confirmationCode }) {
+  async getUserIdByConfirmationCode(confirmationCode) {
     const query = {
       text: 'SELECT user_id FROM bookings WHERE confirmation_code = $1',
       values: [confirmationCode],
