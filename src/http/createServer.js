@@ -13,6 +13,7 @@ const FestivalsService = require('../services/postgres/FestivalsService');
 const BookingsService = require('../services/postgres/BookingsService');
 const QueueService = require('../services/rabbitmq/QueueService');
 const bookings = require('../api/bookings');
+const LocalStorageService = require('../services/storages/LocalStorageService');
 
 async function createServer() {
   // create services that will be used by the plugin
@@ -21,6 +22,7 @@ async function createServer() {
   const festivalsService = new FestivalsService();
   const bookingsService = new BookingsService();
   const queueService = new QueueService();
+  const storageService = new LocalStorageService();
 
   // create HTTP server using hapi
   const server = Hapi.server({
@@ -66,6 +68,7 @@ async function createServer() {
       plugin: users,
       options: {
         usersService,
+        storageService,
       },
     },
     {
