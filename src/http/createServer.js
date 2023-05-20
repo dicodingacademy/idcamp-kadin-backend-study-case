@@ -14,13 +14,15 @@ const BookingsService = require('../services/postgres/BookingsService');
 const QueueService = require('../services/rabbitmq/QueueService');
 const bookings = require('../api/bookings');
 const LocalStorageService = require('../services/storages/LocalStorageService');
+const CacheService = require('../services/redis/CacheService');
 
 async function createServer() {
   // create services that will be used by the plugin
+  const cacheService = new CacheService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
   const festivalsService = new FestivalsService();
-  const bookingsService = new BookingsService();
+  const bookingsService = new BookingsService(cacheService);
   const queueService = new QueueService();
   const storageService = new LocalStorageService();
 
