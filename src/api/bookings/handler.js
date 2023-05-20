@@ -94,16 +94,21 @@ class BookingsHandler {
     }
 
     // get booking data by booking id
-    const booking = await this._bookingsService.getBookingById(bookingId);
+    // value is the booking data
+    // from is the data source, either 'cache' or 'database'
+    const { from, value } = await this._bookingsService.getBookingById(bookingId);
 
     // create response with booking data
     const response = h.response({
       status: 'success',
       message: 'booking berhasil ditemukan',
       data: {
-        booking,
+        booking: value,
       },
     });
+
+    // set header X-Data-Source to indicate the data source
+    response.header('X-Data-Source', from);
 
     return response;
   }
