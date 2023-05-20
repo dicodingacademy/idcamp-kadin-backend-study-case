@@ -2,6 +2,7 @@ const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
 const { createPool } = require('./pool');
 const AuthenticationError = require('../../exceptions/AuthenticationError');
+const NotFoundError = require('../../exceptions/NotFoundError');
 
 // this class will be used to handle all the database operations related to users table
 class UsersService {
@@ -72,6 +73,36 @@ class UsersService {
     }
 
     return id;
+  }
+
+  /**
+   * this method will be used to update refresh token to database
+   */
+  async updateIdCardUser(userId, idCardUrl) {
+    const query = {
+      text: 'UPDATE users SET id_card_name = $1 WHERE id = $2',
+      values: [idCardUrl, userId],
+    };
+
+    await this._pool.query(query);
+  }
+
+  // this method will be used to get user by id from database
+  async getUserIdCard(userId) {
+    const query = {
+      text: 'SELECT id_card_name FROM users WHERE id = $1',
+      values: [userId],
+    };
+
+    const result = await this._pool.query(query);
+    const idCard = result.rows[0].id_card_name;
+
+    // if user with id not found, throw error
+    if (!idCard) {
+      throw new NotFoundError('id card tidak ditemukan');
+    }
+
+    return idCard;
   }
 }
 
