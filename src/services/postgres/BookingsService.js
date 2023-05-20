@@ -3,8 +3,10 @@ const { createPool } = require('./pool');
 
 // this class will be used to handle all the database operations related to bookings table
 class BookingsService {
-  constructor() {
+  constructor(cacheService) {
     this._pool = createPool();
+    // inject cache service
+    this._cacheService = cacheService;
   }
 
   /**
@@ -34,6 +36,12 @@ class BookingsService {
     };
 
     await this._pool.query(query);
+
+    // delete the cache
+    const bookingId = await this.getBookingIdByConfirmationCode(confirmationCode);
+
+    // we need to delete the cache because the booking status has changed
+    await this._cacheService.del(`booking:${bookingId}`);
   }
 
   /**
@@ -76,6 +84,20 @@ class BookingsService {
    * this method will be used to get booking by id
    */
   async getBookingById(bookingId) {
+    // check the cache first
+    const cacheKey = `booking:${bookingId}`;
+
+    // get the cache
+    const cache = await this._cacheService.get(cacheKey);
+
+    // if cache is exist, then return the cache
+    if (cache) {
+      return {
+        value: JSON.parse(cache),
+        from: 'cache', // this will be used to check where the data is coming from
+      };
+    }
+
     const query = {
       text: 'SELECT * FROM bookings WHERE id = $1',
       values: [bookingId],
@@ -88,7 +110,13 @@ class BookingsService {
     // delete the confirmation code from the booking object
     delete booking.confirmation_code;
 
-    return booking;
+    // store the booking object in cache
+    await this._cacheService.set(cacheKey, JSON.stringify(booking));
+
+    return {
+      value: booking,
+      from: 'database', // this will be used to check where the data is coming from
+    };
   }
 
   /**
@@ -101,6 +129,27 @@ class BookingsService {
     };
 
     await this._pool.query(query);
+
+    // we need to delete the cache because the booking status has changed
+    await this._cacheService.delete(`booking:${bookingId}`);
+  }
+
+  /**
+   * this method will be used to get booking id by confirmation code
+   */
+  async getBookingIdByConfirmationCode(confirmationCode) {
+    const query = {
+      text: 'SELECT id FROM bookings WHERE confirmation_code = $1',
+      values: [confirmationCode],
+    };
+
+    const { rows } = await this._pool.query(query);
+
+    if (!rows.length) {
+      return null;
+    }
+
+    return rows[0].id;
   }
 }
 
